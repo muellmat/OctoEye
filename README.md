@@ -30,18 +30,25 @@ How to run the example
 
 
 
+How does the algorithm work?
+----------------------------
+
+todo
+
+
+
 FAQ
 ---
 
 1. What are these *raw files*?
 
-   The Octopus 900 perimeter returns grayscale images as a byte sequence with a dimension of 320x240 px. So the *raw files* are just `byte[] foo = new byte[320*240*1]` saved to file.
+   The Octopus 900 perimeter returns grayscale images as a byte sequence with a dimension of 320x240 px. So the *raw files* are just `byte[] foo = new byte[320*240*1]` saved to a file.
 
 2. What is *t*, *d*, *a* and *b* in the screenshot?
    * *t*: needed time
-   * *d*: pupil diameter (okay, acutally it's 2*pupilMajorAxis)
+   * *d*: pupil diameter (okay, actually it's 2*pupilMajorAxis)
    * *a*: major axis of the pupil ellipse (red)
-   * *b*: minor axis of the pupil ellipse (red)
+   * *b*: minor axis of the pupil ellipse (blue)
 
 
 
