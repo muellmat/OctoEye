@@ -26,6 +26,7 @@ How to run the example
 3. Compile the source files. I'd suggest to create a new project using an IDE such as [IntelliJ](https://www.jetbrains.com/idea/)
    1. In the new project, open *File > Project structure* and add opencv-249.jar to the libraries.
    2. Edit run configuration. You will need a VM option: e.g. `-Djava.library.path="lib/x86"`. Add program arguments: `data/1`.
+4. Run the Main class.
 
 
 
