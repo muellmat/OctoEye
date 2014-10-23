@@ -1,7 +1,7 @@
 OctoEye
 =======
 
-Pupil tracking algorithm especially for the Octopus® 900 perimeter (Haag-Streit).
+Pupil tracking algorithm especially for the [Octopus® 900](http://www.haag-streit.com/products/perimetry/octopusr-900.html) perimeter ([Haag-Streit](http://www.haag-streit.com/)).
 
 ![Screenshot](screenshot.png "Screenshot")
 
