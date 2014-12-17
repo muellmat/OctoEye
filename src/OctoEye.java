@@ -76,7 +76,7 @@ public class OctoEye {
     private long start = 0, end = 0, time = 0;
     private Mat src, dst, dbg, dst2, tmp1, tmp2;
 
-    private RotatedRect pupil = null;
+    private RotatedRect pupil = new RotatedRect();
     private Point axisA = null;
     private Point axisB = null;
     private int pupilMajorAxis = 0;
@@ -84,7 +84,7 @@ public class OctoEye {
     private boolean star = false;
     private boolean ring = false;
 
-    private boolean debug = true;
+    private boolean debug = false;
 
     public OctoEye(byte buffer[]) {
         start = System.currentTimeMillis();
@@ -362,6 +362,11 @@ public class OctoEye {
             points2.fromArray(points1);
             pupil = Imgproc.fitEllipse(points2);
         }
+        if (pupil.center.x==0 && pupil.center.y==0) {
+            // something went wrong, return null
+            reset();
+            return;
+        }
 
         if (debug) {
             Core.ellipse(dbg,pupil,PURPLE,2);
@@ -477,7 +482,7 @@ public class OctoEye {
 
     private void reset() {
         // something went wrong, return null
-        pupil = null;
+        pupil = new RotatedRect();
         axisA = null;
         axisB = null;
         pupilMajorAxis = 0;
