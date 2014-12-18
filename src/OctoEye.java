@@ -84,7 +84,7 @@ public class OctoEye {
     private boolean star = false;
     private boolean ring = false;
 
-    private boolean debug = false;
+    private boolean debug = true;
 
     public OctoEye(byte buffer[]) {
         start = System.currentTimeMillis();
