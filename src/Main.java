@@ -1,27 +1,24 @@
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.swing.event.*;
+import java.awt.image.*;
+import java.io.*;
 
 public class Main {
 
-    public MainController controller = new MainController(this);
+    private JFrame frame;
 
-    public String path;
-    public File folder;
-    public File[] files;
-    public JFrame frame;
-    public JSlider slider;
-    public JLabel text;
-    public JLabel labelSrc;
-    public JLabel labelDst;
-    public BufferedImage imageSrc;
-    public BufferedImage imageDst;
-    public OctoEye oe;
+    private JPanel main;
+    private JLabel status;
+    private JLabel srcLabel;
+    private JLabel dstLabel;
+    private JSlider select;
+
+    private String path;
+    private File folder;
+    private File[] files;
+    private BufferedImage src;
+    private BufferedImage dst;
+    private OctoEye oe;
 
     public Main(String[] args) {
         if (args.length!=1) {
@@ -32,42 +29,37 @@ public class Main {
         path   = String.format(args[0]);
         folder = new File(path);
         files  = folder.listFiles();
-        frame  = new JFrame();
-        slider = new JSlider(JSlider.HORIZONTAL,0,files.length-1,0);
-        text   = new JLabel("");
-        labelSrc = new JLabel();
-        labelDst = new JLabel();
+
+        frame = new JFrame("OctoEye");
+        frame.setContentPane(main);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setVisible(true);
+
+        select.setMinimum(0);
+        select.setMaximum(files.length - 1);
+        select.addChangeListener(new ChangeListener() {
+            public void stateChanged(ChangeEvent e) {
+                setImage((int) ((JSlider) e.getSource()).getValue());
+            }
+        });
 
         setImage(0);
+    }
 
-        slider.addChangeListener(controller);
-        slider.setMajorTickSpacing(50);
-        slider.setMinorTickSpacing(10);
-        slider.setMinimum(0);
-        slider.setMaximum(files.length);
-        slider.setPaintTicks(true);
-        slider.setPaintLabels(true);
-        text.setFont(new Font("Courier New",Font.BOLD,12));
-        text.setHorizontalAlignment(SwingConstants.CENTER);
-        labelSrc.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
-        labelDst.setBorder(BorderFactory.createLineBorder(Color.BLACK,1));
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocation(50,50);
-        frame.getContentPane().add(text,BorderLayout.NORTH);
-        frame.getContentPane().add(labelSrc,BorderLayout.WEST);
-        frame.getContentPane().add(labelDst,BorderLayout.EAST);
-        frame.getContentPane().add(slider,BorderLayout.SOUTH);
-        frame.pack();
-        frame.setVisible(true);
+    public static void main(String[] args) {
+        new Main(args);
     }
 
     public void setImage(int i) {
         if (i<0 || i>=files.length)
             return;
         readImageFromFile(files[i].toString());
+
         frame.setTitle(files[i].getName());
-        labelSrc.setIcon(new ImageIcon(imageSrc));
-        labelDst.setIcon(new ImageIcon(imageDst));
+        srcLabel.setIcon(new ImageIcon(src.getScaledInstance(OctoEye.WIDTH*2,OctoEye.HEIGHT*2,java.awt.Image.SCALE_SMOOTH)));
+        dstLabel.setIcon(new ImageIcon(dst.getScaledInstance(OctoEye.WIDTH*2,OctoEye.HEIGHT*2,java.awt.Image.SCALE_SMOOTH)));
     }
 
     public void readImageFromFile(String fileName) {
@@ -85,12 +77,12 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        imageSrc = new BufferedImage(OctoEye.WIDTH,OctoEye.HEIGHT,BufferedImage.TYPE_BYTE_GRAY);
-        System.arraycopy(buffer,0,((DataBufferByte)imageSrc.getRaster().getDataBuffer()).getData(),0,buffer.length);
+        src = new BufferedImage(OctoEye.WIDTH,OctoEye.HEIGHT,BufferedImage.TYPE_BYTE_GRAY);
+        System.arraycopy(buffer,0,((DataBufferByte)src.getRaster().getDataBuffer()).getData(),0,buffer.length);
         oe = new OctoEye(buffer);
 
-        imageSrc = oe.getBufferedImage(oe.getDbg());
-        imageDst = oe.getBufferedImage(oe.getDst());
+        src = oe.getBufferedImage(oe.getDbg());
+        dst = oe.getBufferedImage(oe.getDst());
 
         String info = String.format("t = %02d ms    d = %02dpx    a = %02dpx    b = %02dpx    [%s%s]",
                 oe.getTime(),
@@ -100,11 +92,7 @@ public class Main {
                 oe.isStar()?"*":" ",
                 oe.isRing()?"o":" ",
                 fileName);
-        text.setText(info);
-        //System.out.println(info + "    " + fileName);
+        status.setText(info);
     }
 
-    public static void main(String[] args) {
-        new Main(args);
-    }
 }
